@@ -1,10 +1,11 @@
 package Tie::Function;
 
 use 5.006;
-use strict;
-use warnings;
+# use strict;
+# use warnings;
+no warnings;  # slience "split on uninitialized value" when $_[key] is uninit
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 use Carp;
 
 sub OBJ(){0};
@@ -42,6 +43,19 @@ Tie::Function simplifies wrapping functions in tied hash syntax
 so they can be interpolated in double-quoted
 literals without messy intermediate variables.
 
+Here's how I use it the most:
+
+   use HTML::Entities;
+   use Tie::Function;
+   tie my %Entitize => 'Tie::Function' => \&encode_entities;
+   ...
+   print <<EOF;
+   <em>$Entitize{$somethingaboutsomething}</em><br>
+   <textarea name="something"
+   cols="60" rows="10">$Entitize{$something}</textarea>
+   EOF
+   ...
+
 =head1 EXPORT
 
 nothing
@@ -50,9 +64,17 @@ nothing
 
 =head2 0.01
 
+initial version
+
+=head2 0.02
+
+relaxed stricture, turned off warnings
+to silence "split on unitialized value"
+warning
+
 =head1 AUTHOR
 
-Copyright (C) 2004 david nicol davidnico@cpan.org
+Copyright (C) 2004,2005 david nicol davidnico@cpan.org
 released under your choice of the GNU Public or Artistic licenses
 
 =head1 SEE ALSO
@@ -64,6 +86,8 @@ L<Tie::OneOff>
 L<Interpolation>
 
 L<Tie::Filter>
+
+L<overload>
 
 =cut
 
